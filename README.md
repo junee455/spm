@@ -3,7 +3,7 @@
 **spm** - simple password management script that stores passwords in your home directory
 ## usage
 
-you can set new passwords or update old ones with **set** command\\
+you can set new passwords or update old ones with **set** command<br />
 **get** command copies appropriate password to clipboard and
 **del** command removes password and its entry from list
 
