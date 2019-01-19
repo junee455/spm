@@ -3,6 +3,10 @@
 **spm** - simple password management script that stores passwords in your home directory
 ## usage
 
+you can set new passwords or update old ones with **set** command
+**get** command copies appropriate password to clipboard and
+**del** command removes password and its entry from list
+
 ``` bash
 ~ spm set some_web_site "some simple pass"
 ~ spm get some_web_site
