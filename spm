@@ -1,0 +1,64 @@
+#!/usr/bin/bash
+
+_PASS_FILE="$HOME/.spm_passwords"
+
+# read $pass
+# echo pass: $pass
+# echo args: 
+
+if [[ "$1" == "set" && "$3" == "" ]]; then
+    echo Enter password:
+    read _PASS
+    # _PASS=`cat /dev/stdin`
+else
+    _PASS=$3
+fi
+
+
+function print_help() {
+     printf "usage:
+  help           - this message
+  set ENTRY PASS - set PASS for PASS
+                   PASS can be passed to the script
+		   via stdin
+  get ENTRY      - copy ENTRY password to clipboard
+  del ENTRY      - remove entry
+"   
+}
+
+if [[ "$@" = "" ]]; then
+    print_help
+elif [[ "$1" == "help" ]]; then
+    print_help
+elif [[ "$1" == "get" ]]; then
+    if [[ "$2" == "" ]]; then
+	echo "ENTRY is empty"
+	exit
+    fi
+    if ! grep -q "^$2: " $_PASS_FILE ; then
+	echo no entry for $2
+	exit
+    fi
+    cat "$_PASS_FILE" | grep "^$2: " | sed "s/^$2: //" | tr -d "\n" | xclip -selection clipboard
+    echo password copied to clipboard
+elif [[ "$1" == "del" ]]; then
+    if [[ "$2" == "" ]]; then
+	echo "ENTRY is empty"
+	exit
+    fi
+    sed -i "s/^$2:.*//g" "$_PASS_FILE"
+    sed -i "/^$/d" "$_PASS_FILE"
+elif [[ "$1" == "set" ]]; then
+    if [[ "$3" == "" && "$_PASS" == "" ]]; then
+	echo "ENTRY or PASS is empty"
+	exit
+    fi
+
+    if grep -q "^$2: " $_PASS_FILE ; then
+	sed -i "s/^$2:.*/$2: $_PASS/g" "$_PASS_FILE"
+    else
+    	echo -en "\n$2: $_PASS" >> "$_PASS_FILE"
+    fi
+else
+    print_help
+fi
